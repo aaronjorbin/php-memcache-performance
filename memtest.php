@@ -6,7 +6,9 @@ $m = new Memcache();
 $m->addServer( '127.0.0.1', 11211 );
 $d = new Memcached();
 $d->addServer( '127.0.0.1', 11211 );
-$d->setOption( Memcached::OPT_BINARY_PROTOCOL, true );
+$b = new Memcached();
+$b->addServer( '127.0.0.1', 11211 );
+$b->setOption( Memcached::OPT_BINARY_PROTOCOL, true );
 
 function randomString($length = 10) {
 	return substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, $length);
@@ -18,6 +20,7 @@ for ( $t = 0; $t < $times; $t++ ) {
 	$key = randomString(); 
 	$memcacheKey = $key . 'm';
 	$memcachedKey = $key . 'd';
+	$memcachedbKey = $key . 'b';
 	$value = randomString( rand( 1, 200 ) );
 
 
@@ -28,8 +31,6 @@ for ( $t = 0; $t < $times; $t++ ) {
 
 	$end = microtime( true );
 	$execution = $end - $start;
-
-
 
 	$results[ 'add' ][ 'memcache' ][] = $execution;
 
@@ -42,6 +43,16 @@ for ( $t = 0; $t < $times; $t++ ) {
 	$execution = $end - $start;
 
 	$results[ 'add' ][ 'memcached' ][] = $execution;
+
+	// memcached binary add
+	$start = microtime(true);
+
+	$b->add( 'add-' . $memcachedKey , $value );
+
+	$end = microtime( true );
+	$execution = $end - $start;
+
+	$results[ 'add' ][ 'memcachedBinary' ][] = $execution;
 
 	// memcache set
 	$start = microtime(true);
@@ -62,6 +73,16 @@ for ( $t = 0; $t < $times; $t++ ) {
 	$execution = $end - $start;
 
 	$results[ 'set' ][ 'memcached' ][] = $execution;
+
+	// memcached set
+	$start = microtime(true);
+
+	$b->set( 'set-' . $memcachedKey , $value );
+
+	$end = microtime( true );
+	$execution = $end - $start;
+
+	$results[ 'set' ][ 'memcachedBinary' ][] = $execution;
 
 	// memcache get
 	$start = microtime(true);
@@ -84,6 +105,17 @@ for ( $t = 0; $t < $times; $t++ ) {
 	$execution = $end - $start;
 
 	$results[ 'get' ][ 'memcached' ][] = $execution;
+
+	// memcached get
+	$start = microtime(true);
+
+	$b->get( 'add-' . $memcacheKey ); 
+	$b->get( 'set-' . $memcacheKey ); 
+
+	$end = microtime( true );
+	$execution = $end - $start;
+
+	$results[ 'get' ][ 'memcachedBinary' ][] = $execution;
 
 }
 
