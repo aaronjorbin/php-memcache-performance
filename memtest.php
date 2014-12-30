@@ -132,7 +132,7 @@ foreach( $results as $k => $tests ) {
 		sort( $v );
 		$ninety_nine = round( ( $times / 100 ) * 99 );
 		$ninety_five = round( ( $times / 100 ) * 95 );
-		echo "\n$type: 99%: " . formatNum( $v[ $ninety_nine ] );
+		echo "\n$type: 95%: " . formatNum( $v[ $ninety_five ] );
 		echo "\n$type: 99%: " . formatNum( $v[ $ninety_nine ] );
 	}
 	echo "\n";
