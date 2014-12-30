@@ -14,6 +14,10 @@ function randomString($length = 10) {
 	return substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, $length);
 }
 
+function formatNum( $number ) {
+	return number_format( $number * 1000, 4 );
+}
+
 
 for ( $t = 0; $t < $times; $t++ ) {
 
@@ -119,16 +123,17 @@ for ( $t = 0; $t < $times; $t++ ) {
 
 }
 
+echo "\nResults are in thousandth of a second";
 foreach( $results as $k => $tests ) {
 	echo "\n---";
 	echo "\nTEST: $k";
 	foreach( $tests as $type => $v) { 
-		echo "\n$type: Average Execution: " . array_sum( $v ) / count( $v );
+		echo "\n$type: Average Execution: " . formatNum( array_sum( $v ) / count( $v ) );
 		sort( $v );
 		$ninety_nine = round( ( $times / 100 ) * 99 );
 		$ninety_five = round( ( $times / 100 ) * 95 );
-		echo "\n$type: 99%: " . $v[ $ninety_nine ];
-		echo "\n$type: 99%: " . $v[ $ninety_nine ];
+		echo "\n$type: 99%: " . formatNum( $v[ $ninety_nine ] );
+		echo "\n$type: 99%: " . formatNum( $v[ $ninety_nine ] );
 	}
-	echo "\n---";
+	echo "\n";
 }
