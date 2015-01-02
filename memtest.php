@@ -9,6 +9,7 @@ class memTest{
   private $keys = array();
 
   function __construct() {
+
     $this->createConnections();
     
     $env_times = getenv( 'memtest_times' );
@@ -157,51 +158,53 @@ class memTest{
     }
   }
 
+
+
   /**
    * Echo out the results
    */
-  function reportResults() {
+  function getResults() {
+    $resultsString = '';
 
     // We want padded names for display
     $lengths = array_map( 'strlen', $this->_connection_types );
     $longest = max( $lengths ) + 2; 
 
-    echo "\nResults are in thousandth of a second";
+    $resultsString .= "\nResults are in thousandth of a second";
+    $resultsString .= "\nruns: " . $this->times;
     foreach( $this->results as $k => $tests ) {
-      echo "\n---";
-      echo "\nTEST: $k";
-
-     
-      echo "\n\tAverage Execution:";
+      $resultsString .= "\n---";
+      $resultsString .= "\nTEST: $k";
+      $resultsString .= "\n\tAverage Execution:";
       foreach( $this->_connection_types as $ct ){
         $name = str_pad( $ct, $longest );
-        echo "\n$name: " . $this->_formatNum( array_sum( $tests[$ct] ) / count( $tests[$ct] ) );
+        $resultsString .= "\n$name: " . $this->_formatNum( array_sum( $tests[$ct] ) / count( $tests[$ct] ) );
       }
 
-      echo "\n\t95% execution time";
+      $resultsString .= "\n\t95% execution time";
       foreach( $this->_connection_types as $ct ){
         $name = str_pad( $ct, $longest );
         $ninety_five = round( ( $this->times / 100 ) * 95 );
 
         sort( $tests[$ct] );
 
-        echo "\n$name: " . $this->_formatNum( $tests[$ct][ $ninety_five ] );
+        $resultsString .= "\n$name: " . $this->_formatNum( $tests[$ct][ $ninety_five ] );
       }
 
-      echo "\n\t99% execution time";
+      $resultsString .= "\n\t99% execution time";
       foreach( $this->_connection_types as $ct ){
         $name = str_pad( $ct, $longest );
         $ninety_nine = round( ( $this->times / 100 ) * 99 );
 
         sort( $tests[$ct] );
 
-        echo "\n$name: " . $this->_formatNum( $tests[$ct][ $ninety_nine ] );
+        $resultsString .= "\n$name: " . $this->_formatNum( $tests[$ct][ $ninety_nine ] );
       }
 
-      echo "\n";
+      $resultsString .= "\n";
     }
-    
 
+    return $resultsString;
   }
 
   /**
@@ -236,4 +239,4 @@ $m = new MemTest();
 $m->testAdds();
 $m->testSets();
 $m->testGets();
-$m->reportResults();
+echo $m->getResults();
