@@ -10,6 +10,13 @@ class memTest{
 
   function __construct() {
     $this->createConnections();
+    
+    $env_times = getenv( 'memtest_times' );
+    var_dump( is_numeric( $env_times ) );
+    if ( is_numeric( $env_times ) ) {
+      $this->times = (int) $env_times;
+    }
+
     $this->createKeys();
 
   }
