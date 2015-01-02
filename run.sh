@@ -10,7 +10,7 @@ echo $REPO
 
 php memtest.php > $PHPVERSION.$NOWDATE.txt
 
-git remote set-url --push $REPO
+git remote set-url --push origin $REPO
 git remote set-branches --add origin results
 git fetch -q
 git config user.name '$GIT_NAME'
