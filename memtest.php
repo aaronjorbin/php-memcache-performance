@@ -9,6 +9,13 @@ class memTest{
   private $keys = array();
 
   function __construct() {
+    $this->createConnections();
+    $this->createKeys();
+
+  }
+
+  private function createConnections(){
+
     $this->_connections['memcache'] = array(  
       'connection' => new Memcache(),
       'addMethod' => 'add',
@@ -52,9 +59,6 @@ class memTest{
     $this->_connections[ 'memcached_withBinaryProtocol' ][ 'connection' ]->setOption( Memcached::OPT_BINARY_PROTOCOL, true );
 
     $this->_connection_types = array_keys( $this->_connections );
-
-    $this->createKeys();
-
   }
 
   /**
