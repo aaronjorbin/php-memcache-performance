@@ -4,20 +4,52 @@ class memTest{
 
   private $_connections = array();
   private $_connection_types = array();
-  private $times = 1000000;
+  private $times = 10000;
   private $results = array();
   private $keys = array();
 
   function __construct() {
-    $this->_connections['memcache'] = new Memcache();
-    $this->_connections['memcached'] = new Memcached();
-    $this->_connections['memcached_withBinaryProtocol'] = new Memcached();
-
+    $this->_connections['memcache'] = array(  
+      'connection' => new Memcache(),
+      'addMethod' => 'add',
+      'getMethod' => 'get',
+      'setMethod' => 'set',
+      'connectMethod' => 'addServer', 
+      'port' => '11211',
+      'getPrefixes'  => array( 'add', 'set' )
+    );
+    $this->_connections['memcached'] = array(  
+      'connection' => new Memcached(),
+      'addMethod' => 'add',
+      'getMethod' => 'get',
+      'setMethod' => 'set',
+      'connectMethod' => 'addServer', 
+      'port' => '11211',
+      'getPrefixes'  => array( 'add', 'set' )
+    );
+    $this->_connections['memcached_withBinaryProtocol'] = array(  
+      'connection' => new Memcached(),
+      'addMethod' => 'add',
+      'getMethod' => 'get',
+      'setMethod' => 'set',
+      'connectMethod' => 'addServer', 
+      'port' => '11211',
+      'getPrefixes'  => array( 'add', 'set' )
+    );
+    $this->_connections['redis'] = array(  
+      'connection' => new Redis(),
+      'addMethod' => 'set',
+      'getMethod' => 'get',
+      'setMethod' => 'set',
+      'connectMethod' => 'connect', 
+      'port' => '6379',
+      'getPrefixes'  => array( 'add', 'set' )
+    );
     foreach( $this->_connections as $connection) {
-      $connection->addServer( '127.0.0.1', 11211 );
+      $connection['connection']->$connection['connectMethod']( '127.0.0.1', $connection['port'] );
 
     }
-    $this->_connections['memcached_withBinaryProtocol']->setOption( Memcached::OPT_BINARY_PROTOCOL, true );
+    $this->_connections[ 'memcached_withBinaryProtocol' ][ 'connection' ]->setOption( Memcached::OPT_BINARY_PROTOCOL, true );
 
     $this->_connection_types = array_keys( $this->_connections );
 
@@ -53,9 +85,11 @@ class memTest{
       for ( $t = 0; $t < $this->times; $t++ ) {
         $memcacheKey = $this->keys[ $ct ][ $t ][ 'key' ]; 
         $value = $this->keys[ $ct ][ $t ][ 'value' ]; 
+        $method = $this->_connections[ $ct ][ 'addMethod'];
+        $connection = $this->_connections[ $ct ][ 'connection' ];
         $start = microtime(true);
-
-        $this->_connections[ $ct ]->add( 'add-' . $memcacheKey , $value ); 
+        
+        $connection->$method( 'add-' . $memcacheKey , $value );
 
         $end = microtime( true );
         $execution = $end - $start;
@@ -73,9 +107,11 @@ class memTest{
       for ( $t = 0; $t < $this->times; $t++ ) {
         $memcacheKey = $this->keys[ $ct ][ $t ][ 'key' ]; 
         $value = $this->keys[ $ct ][ $t ][ 'value' ]; 
+        $method = $this->_connections[ $ct ][ 'setMethod'];
+        $connection = $this->_connections[ $ct ][ 'connection' ];
         $start = microtime(true);
-
-        $this->_connections[ $ct ]->set( 'set-' . $memcacheKey , $value ); 
+        
+        $connection->$method( 'set-' . $memcacheKey , $value );
 
         $end = microtime( true );
         $execution = $end - $start;
@@ -93,10 +129,14 @@ class memTest{
       for ( $t = 0; $t < $this->times; $t++ ) {
         $memcacheKey = $this->keys[ $ct ][ $t ][ 'key' ]; 
         $value = $this->keys[ $ct ][ $t ][ 'value' ]; 
-        $start = microtime(true);
 
-        $this->_connections[ $ct ]->get( 'add-' . $memcacheKey ); 
-        $this->_connections[ $ct ]->get( 'set-' . $memcacheKey ); 
+        $method = $this->_connections[ $ct ][ 'getMethod'];
+        $connection = $this->_connections[ $ct ][ 'connection' ];
+        $start = microtime(true);
+       
+        foreach( $this->_connections[ $ct ][ 'getPrefixes']  as $prefix ) {
+          $connection->$method( $prefix . '-' . $memcacheKey );
+        }
 
         $end = microtime( true );
         $execution = $end - $start;

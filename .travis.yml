@@ -16,7 +16,8 @@ php:
 
 services:
   - memcached # will start memcached
+  - redis
 
 before_script: phpenv config-add myconfig.ini
 
-script: php memtest.php 
+script: php memtest.php
