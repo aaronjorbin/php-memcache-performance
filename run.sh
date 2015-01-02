@@ -6,7 +6,7 @@ GITREPO=`git config remote.origin.url`
 REPO=${GITREPO/#git:/https:}
 
 echo $GITREPO
-echo $NEWREPO
+echo $REPO
 
 php memtest.php > $PHPVERSION.$NOWDATE.txt
 
