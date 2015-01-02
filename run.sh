@@ -8,6 +8,7 @@ REPO=${GITREPO/#git:/https:}
 echo $GITREPO
 echo $REPO
 
+echo "Starting memtest";
 php memtest.php > $PHPVERSION.$NOWDATE.txt
 
 git remote set-url --push origin $REPO

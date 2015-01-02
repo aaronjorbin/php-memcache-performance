@@ -1,0 +1,57 @@
+bool(true)
+
+Results are in thousandth of a second
+runs: 100
+---
+TEST: add
+	Average Execution:
+memcache                      : 0.0538
+memcached                     : 0.0507
+memcached_withBinaryProtocol  : 0.0492
+redis                         : 0.0578
+	95% execution time
+memcache                      : 0.1099
+memcached                     : 0.0818
+memcached_withBinaryProtocol  : 0.0691
+redis                         : 0.0751
+	99% execution time
+memcache                      : 0.3419
+memcached                     : 0.3211
+memcached_withBinaryProtocol  : 0.2060
+redis                         : 0.1919
+
+---
+TEST: set
+	Average Execution:
+memcache                      : 0.0494
+memcached                     : 0.0373
+memcached_withBinaryProtocol  : 0.0382
+redis                         : 0.0410
+	95% execution time
+memcache                      : 0.0710
+memcached                     : 0.0641
+memcached_withBinaryProtocol  : 0.0410
+redis                         : 0.0501
+	99% execution time
+memcache                      : 0.8290
+memcached                     : 0.0670
+memcached_withBinaryProtocol  : 0.6289
+redis                         : 0.1121
+
+---
+TEST: get
+	Average Execution:
+memcache                      : 0.0813
+memcached                     : 0.0684
+memcached_withBinaryProtocol  : 0.1117
+redis                         : 0.1818
+	95% execution time
+memcache                      : 0.1140
+memcached                     : 0.1059
+memcached_withBinaryProtocol  : 0.1588
+redis                         : 0.1528
+	99% execution time
+memcache                      : 0.1850
+memcached                     : 0.1731
+memcached_withBinaryProtocol  : 0.8550
+redis                         : 4.9801
